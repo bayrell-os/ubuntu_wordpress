@@ -4,8 +4,13 @@ FROM ${ARCH}ubuntu:focal
 RUN cd ~; \
 	export DEBIAN_FRONTEND='noninteractive'; \
 	apt-get update; \
-	apt-get install -y --no-install-recommends mc less nano wget pv zip unzip supervisor net-tools sudo apache2 php7.4 php7.4-common php7.4-mysql php7.4-gd php7.4-xml php7.4-zip php7.4-opcache python3 python3-pip; \
+	apt-get install -y --no-install-recommends mc less nano wget pv zip unzip supervisor net-tools sudo apache2 php7.4 php7.4-common php7.4-mysql php7.4-gd php7.4-xml php7.4-zip php7.4-opcache php7.4-curl php7.4-mbstring php-imagick python3 python3-pip; \
+	sed -i "s|www-data:x:33:33:www-data:/var/www:/usr/sbin/nologin|www-data:x:33:33:www-data:/var/www:/bin/bash|g" /etc/passwd; \
+	a2enmod rewrite; \
 	apt-get clean; \
+	ln -sf /dev/stdout /var/log/apache2/access.log; \
+	ln -sf /dev/stderr /var/log/apache2/error.log; \
+	ln -sf /dev/stdout /var/log/apache2/other_vhosts_access.log; \
 	echo 'Ok'
 
 
@@ -18,6 +23,7 @@ RUN cd ~; \
 	cp -rf /src/files/root/* /root/; \
 	rm -rf /src/files; \
 	rm -rf /var/www/html; \
+	chown -R www-data:www-data /var/www; \
 	chmod +x /root/run.sh; \
 	echo "Ok"
 
