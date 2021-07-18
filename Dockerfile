@@ -7,10 +7,14 @@ RUN cd ~; \
 	apt-get install -y --no-install-recommends mc less nano wget pv zip unzip supervisor net-tools sudo apache2 php7.4 php7.4-common php7.4-mysql php7.4-gd php7.4-xml php7.4-zip php7.4-opcache php7.4-curl php7.4-mbstring php-imagick python3 python3-pip; \
 	sed -i "s|www-data:x:33:33:www-data:/var/www:/usr/sbin/nologin|www-data:x:33:33:www-data:/var/www:/bin/bash|g" /etc/passwd; \
 	a2enmod rewrite; \
+	a2enmod proxy; \
+	a2enmod proxy_http; \
+	a2enmod proxy_balancer; \
+	a2enmod proxy_wstunnel; \
 	apt-get clean; \
-	ln -sf /dev/stdout /var/log/apache2/access.log; \
-	ln -sf /dev/stderr /var/log/apache2/error.log; \
-	ln -sf /dev/stdout /var/log/apache2/other_vhosts_access.log; \
+	ln -sf /proc/1/fd/1 /var/log/apache2/access.log; \
+	ln -sf /proc/1/fd/2 /var/log/apache2/error.log; \
+	ln -sf /proc/1/fd/1 /var/log/apache2/other_vhosts_access.log; \
 	echo 'Ok'
 
 
